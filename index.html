@@ -51,7 +51,18 @@
       <output id="rotOut" dir="ltr">0°</output>
     </div>
     <p class="hint" data-i18n="hint">Tap a head to select · drag to move · use two fingers to zoom &amp; rotate</p>
+    <button id="installBtn" class="btn install hidden">📲 <span data-i18n="install">Install app</span></button>
   </section>
+
+  <div id="installDialog" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+    <div class="sheet">
+      <img src="icons/icon-192.png" alt="" width="64" height="64" class="logo">
+      <h2 id="installTitle">Install app</h2>
+      <ol id="installSteps" class="steps"></ol>
+      <p id="installNote" class="note"></p>
+      <button id="installOk" class="btn primary wide">Got it</button>
+    </div>
+  </div>
 
   <div id="langDialog" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="langTitle">
     <div class="sheet">

@@ -173,6 +173,16 @@ input[type=range]:disabled { opacity: .35; }
 
 .hint { margin: 0; color: var(--muted); font-size: 12px; text-align: center; }
 
+/* App installieren */
+.btn.install { width: 100%; min-height: 40px; padding: 8px; background: transparent; border-style: dashed; color: var(--text); font-size: 14px; }
+.btn.install span { margin-inline-start: 6px; }
+.steps { text-align: start; margin: 0 0 12px; padding-inline-start: 22px; display: flex; flex-direction: column; gap: 10px; }
+.steps li { padding-inline-start: 4px; }
+.steps svg { width: 20px; height: 20px; vertical-align: -4px; color: #4da3ff; }
+.note { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
+.note:empty { display: none; }
+.btn.wide { width: 100%; }
+
 /* Schmale Displays */
 @media (max-width: 400px) {
   .topbar { gap: 6px; padding: 8px; }

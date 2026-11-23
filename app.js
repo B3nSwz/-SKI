@@ -474,6 +474,71 @@ try { savedLang = localStorage.getItem(LANG_KEY); } catch {}
 applyLanguage(savedLang || 'en');
 if (!savedLang) $('langDialog').classList.remove('hidden');
 
+// ---------- App installieren -----------------------------------------------------
+// Android/Chrome/Edge/Samsung: echter Installationsdialog über "beforeinstallprompt".
+// iOS (Apple erlaubt keine Installation per Knopfdruck) und übrige Browser:
+// Schritt-für-Schritt-Anleitung.
+const installBtn = $('installBtn');
+let deferredPrompt = null;
+
+const isStandalone = () =>
+  window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+const isIOS = () =>
+  /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // iPadOS meldet sich als Mac
+
+const SHARE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+  'stroke-linecap="round" stroke-linejoin="round" aria-label="Share"><path d="M12 3v12"/>' +
+  '<path d="M8 7l4-4 4 4"/><path d="M7 10H5v11h14V10h-2"/></svg>';
+
+function updateInstallButton() {
+  installBtn.classList.toggle('hidden', isStandalone());
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  updateInstallButton();
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredPrompt = null;
+  installBtn.classList.add('hidden');
+});
+
+function showInstallHelp() {
+  const ios = isIOS();
+  const keys = ios ? ['ios1', 'ios2', 'ios3'] : ['and1', 'and2', 'and3'];
+  $('installTitle').textContent = t(ios ? 'iosTitle' : 'andTitle');
+  $('installSteps').innerHTML = keys
+    .map((k) => '<li>' + escapeHtml(t(k)).replace('{share}', SHARE_ICON) + '</li>')
+    .join('');
+  $('installNote').textContent = ios ? t('iosNote') : '';
+  $('installOk').textContent = t('ok');
+  $('installDialog').classList.remove('hidden');
+}
+
+installBtn.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    const p = deferredPrompt;
+    deferredPrompt = null; // ein Prompt kann nur einmal benutzt werden
+    p.prompt();
+    try {
+      const choice = await p.userChoice;
+      if (choice && choice.outcome === 'accepted') installBtn.classList.add('hidden');
+    } catch {}
+    return;
+  }
+  showInstallHelp();
+});
+
+$('installOk').addEventListener('click', () => $('installDialog').classList.add('hidden'));
+$('installDialog').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.add('hidden');
+});
+window.matchMedia('(display-mode: standalone)').addEventListener?.('change', updateInstallButton);
+updateInstallButton();
+
 // ---------- Start --------------------------------------------------------------
 new ResizeObserver(resize).observe(ui.stage);
 resize();

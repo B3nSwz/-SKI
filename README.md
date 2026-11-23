@@ -17,6 +17,10 @@ Den Hundekopf mit Sturmhaube beliebig oft in eigene Bilder einfügen.
 - **⧉ Duplizieren**, **⬆︎ Nach vorne** (Ebene), **🗑 Löschen**
 - **Speichern** – fertiges Bild in voller Auflösung als JPG; auf dem Handy öffnet sich
   das Teilen-Menü („Bild sichern“ / „In Galerie speichern“)
+- **📲 Install app** – auf Android (Chrome, Edge, Samsung Internet) öffnet sich direkt der
+  Installationsdialog; auf iPhone/iPad (Apple erlaubt keine Installation per Knopfdruck)
+  und in anderen Browsern erscheint eine bebilderte Schritt-für-Schritt-Anleitung.
+  Ist die App bereits installiert, wird der Button ausgeblendet.
 - Funktioniert offline, alle Bilder bleiben auf dem Gerät (kein Upload auf einen Server)
 
 Am Desktop: Mausrad = Größe, Shift + Mausrad = Drehung, Entf = Löschen.
