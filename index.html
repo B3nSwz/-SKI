@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>Maskenhund</title>
+  <meta name="description" content="Fotos hochladen und den Hundekopf mit Maske beliebig oft einfügen, skalieren, drehen und spiegeln.">
+  <meta name="theme-color" content="#16181d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Maskenhund">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <label class="btn" for="fileInput">📷 Foto wählen</label>
+    <input id="fileInput" type="file" accept="image/*" hidden>
+    <h1>Maskenhund</h1>
+    <button id="saveBtn" class="btn primary" disabled>⬇︎ Speichern</button>
+  </header>
+
+  <main id="stage">
+    <canvas id="canvas"></canvas>
+    <div id="empty" class="empty">
+      <img src="assets/head.png" alt="" width="120">
+      <p>Tippe auf <b>„Foto wählen“</b>, um ein Bild hochzuladen.<br>
+      Danach mit <b>„+ Kopf“</b> beliebig viele Hundeköpfe einfügen.</p>
+    </div>
+  </main>
+
+  <section class="panel">
+    <div class="row buttons">
+      <button id="addBtn" class="btn primary" disabled>+ Kopf</button>
+      <button id="flipBtn" class="btn" disabled title="Spiegeln">⇋ Spiegeln</button>
+      <button id="dupBtn" class="btn" disabled title="Duplizieren">⧉</button>
+      <button id="frontBtn" class="btn" disabled title="Nach vorne">⬆︎</button>
+      <button id="delBtn" class="btn danger" disabled title="Löschen">🗑</button>
+    </div>
+    <div class="row slider">
+      <label for="sizeRange">Größe</label>
+      <input id="sizeRange" type="range" min="5" max="200" step="1" value="35" disabled>
+      <output id="sizeOut">35 %</output>
+    </div>
+    <div class="row slider">
+      <label for="rotRange">Drehung</label>
+      <input id="rotRange" type="range" min="-180" max="180" step="1" value="0" disabled>
+      <output id="rotOut">0°</output>
+    </div>
+    <p class="hint" id="hint">Kopf antippen zum Auswählen · ziehen zum Verschieben · mit zwei Fingern zoomen &amp; drehen</p>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
