@@ -1,7 +1,7 @@
 'use strict';
 
 // ---------------------------------------------------------------------------
-// Maskenhund – Hundekopf-Sticker auf eigene Fotos setzen
+// $SKI – Hundekopf-Sticker auf eigene Fotos setzen
 // Köpfe werden in normierten Koordinaten gespeichert:
 //   x, y  -> Mittelpunkt als Anteil von Bildbreite/-höhe (0..1)
 //   size  -> Kopfbreite als Anteil der kürzeren Bildseite
@@ -168,7 +168,7 @@ function syncUI() {
   if (h) {
     const pct = Math.round(h.size * 100);
     ui.size.value = pct;
-    ui.sizeOut.textContent = pct + ' %';
+    ui.sizeOut.textContent = pct + '%';
     const deg = Math.round(h.rot);
     ui.rot.value = deg;
     ui.rotOut.textContent = deg + '°';
@@ -207,7 +207,7 @@ ui.file.addEventListener('change', async () => {
     syncUI();
     render();
   } catch (e) {
-    alert('Das Bild konnte nicht geladen werden.');
+    alert(t('loadErr'));
     console.error(e);
   }
 });
@@ -264,7 +264,7 @@ ui.size.addEventListener('input', () => {
   const h = state.heads[state.sel];
   if (!h) return;
   h.size = ui.size.value / 100;
-  ui.sizeOut.textContent = ui.size.value + ' %';
+  ui.sizeOut.textContent = ui.size.value + '%';
   render();
 });
 
@@ -395,14 +395,14 @@ ui.save.addEventListener('click', async () => {
   cx.drawImage(state.bg, 0, 0);
   state.heads.forEach((h) => drawHead(cx, h, c.width, c.height));
   const blob = await new Promise((r) => c.toBlob(r, 'image/jpeg', 0.92));
-  if (!blob) { alert('Speichern fehlgeschlagen.'); return; }
+  if (!blob) { alert(t('saveErr')); return; }
   const ts = new Date().toISOString().replace(/[-:]/g, '').replace('T', '-').slice(0, 15);
-  const name = `maskenhund-${ts}.jpg`;
+  const name = `SKI-${ts}.jpg`;
   const file = new File([blob], name, { type: 'image/jpeg' });
 
   // Auf dem Handy: Teilen-Menü (dort „Bild sichern“ / „In Galerie speichern“)
   if (navigator.canShare && navigator.canShare({ files: [file] }) && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-    try { await navigator.share({ files: [file], title: 'Maskenhund' }); return; }
+    try { await navigator.share({ files: [file], title: '$SKI' }); return; }
     catch (err) { if (err && err.name === 'AbortError') return; }
   }
   const url = URL.createObjectURL(blob);
@@ -414,6 +414,65 @@ ui.save.addEventListener('click', async () => {
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 4000);
 });
+
+// ---------- Sprache -------------------------------------------------------------
+// Standard: Englisch. Beim ersten Öffnen wird die Sprache abgefragt und gemerkt;
+// über den 🌐-Button lässt sie sich jederzeit ändern.
+const LANG_KEY = 'ski-lang';
+let lang = 'en';
+
+function t(key) {
+  return (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key;
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+
+function applyLanguage(code) {
+  lang = I18N[code] ? code : 'en';
+  const meta = LANGS.find((l) => l.code === lang);
+  document.documentElement.lang = lang;
+  document.documentElement.dir = meta ? meta.dir : 'ltr';
+  document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-title]').forEach((el) => {
+    el.title = t(el.dataset.i18nTitle);
+    el.setAttribute('aria-label', el.title);
+  });
+  const bold = (k) => `<b>${escapeHtml(k)}</b>`;
+  $('empty1').innerHTML = escapeHtml(t('empty1')).replace('{photo}', bold(t('photo')));
+  $('empty2').innerHTML = escapeHtml(t('empty2')).replace('{head}', bold('+ ' + t('head')));
+  $('langTitle').textContent = t('pick');
+  renderLangList();
+}
+
+function renderLangList() {
+  const list = $('langList');
+  list.innerHTML = '';
+  LANGS.forEach((l) => {
+    const b = document.createElement('button');
+    b.className = 'btn' + (l.code === lang ? ' current' : '');
+    b.lang = l.code;
+    b.dir = l.dir;
+    b.innerHTML = `<span>${escapeHtml(l.name)}</span><small dir="ltr">${escapeHtml(l.en)}</small>`;
+    b.addEventListener('click', () => {
+      try { localStorage.setItem(LANG_KEY, l.code); } catch {}
+      applyLanguage(l.code);
+      $('langDialog').classList.add('hidden');
+    });
+    list.appendChild(b);
+  });
+}
+
+$('langBtn').addEventListener('click', () => {
+  renderLangList();
+  $('langDialog').classList.remove('hidden');
+});
+
+let savedLang = null;
+try { savedLang = localStorage.getItem(LANG_KEY); } catch {}
+applyLanguage(savedLang || 'en');
+if (!savedLang) $('langDialog').classList.remove('hidden');
 
 // ---------- Start --------------------------------------------------------------
 new ResizeObserver(resize).observe(ui.stage);

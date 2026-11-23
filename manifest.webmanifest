@@ -1,8 +1,8 @@
 {
-  "name": "Maskenhund – Foto-Editor",
-  "short_name": "Maskenhund",
-  "description": "Fotos hochladen und den Hundekopf mit Maske beliebig oft einfügen, skalieren, drehen und spiegeln.",
-  "lang": "de",
+  "name": "$SKI",
+  "short_name": "$SKI",
+  "description": "Upload photos and add the masked dog head as often as you like – resize, rotate and flip it.",
+  "lang": "en",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

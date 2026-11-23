@@ -47,8 +47,39 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.topbar .btn { padding: 10px 12px; }
-@media (max-width: 360px) { .topbar h1 { display: none; } }
+.topbar .btn { padding: 10px 12px; min-width: 0; flex-shrink: 1; }
+.topbar .btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-inline-start: 4px; }
+.topbar .btn.icon { flex-shrink: 0; padding: 10px; }
+/* Sprachauswahl */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: rgba(10, 11, 14, .88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+}
+.sheet {
+  width: 100%;
+  max-width: 420px;
+  max-height: 100%;
+  overflow-y: auto;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 20px 16px 16px;
+  text-align: center;
+}
+.sheet .logo { border-radius: 14px; }
+.sheet h2 { font-size: 18px; margin: 10px 0 16px; }
+.lang-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.lang-list .btn { flex-direction: column; gap: 2px; padding: 10px 6px; min-height: 58px; }
+.lang-list .btn small { font-weight: 400; color: var(--muted); font-size: 12px; }
+.lang-list .btn.current { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
 
 .btn {
   appearance: none;
@@ -114,10 +145,11 @@ body {
   gap: 8px;
 }
 .row { display: flex; align-items: center; gap: 8px; }
-.buttons .btn { flex: 1; padding: 10px 6px; }
-.buttons #addBtn, .buttons #flipBtn { flex: 2; }
+.buttons .btn { flex: 1 1 0; padding: 10px 6px; min-width: 0; }
+.buttons #dupBtn, .buttons #frontBtn, .buttons #delBtn { flex: 0 0 44px; }
+.buttons .btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-inline-start: 4px; }
 
-.slider label { width: 64px; color: var(--muted); font-size: 14px; }
+.slider label { width: 76px; color: var(--muted); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .slider output { width: 52px; text-align: right; font-variant-numeric: tabular-nums; font-size: 14px; }
 .slider input { flex: 1; }
 
@@ -140,3 +172,19 @@ input[type=range]::-moz-range-thumb {
 input[type=range]:disabled { opacity: .35; }
 
 .hint { margin: 0; color: var(--muted); font-size: 12px; text-align: center; }
+
+/* Schmale Displays */
+@media (max-width: 400px) {
+  .topbar { gap: 6px; padding: 8px; }
+  .topbar .btn { padding: 10px 8px; font-size: 14px; }
+  .topbar h1 { flex: 0 1 auto; font-size: 15px; }
+  .buttons .btn { font-size: 14px; }
+}
+@media (max-width: 360px) {
+  .topbar h1 { display: none; }
+  .topbar .btn { font-size: 13px; padding: 6px; }
+  .topbar .btn span { white-space: normal; text-overflow: clip; line-height: 1.15; text-align: center; }
+  .row.buttons { flex-wrap: wrap; }
+  .buttons #addBtn, .buttons #flipBtn { flex: 1 1 40%; }
+  .buttons #dupBtn, .buttons #frontBtn, .buttons #delBtn { flex: 1 1 25%; }
+}

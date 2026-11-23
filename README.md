@@ -1,11 +1,14 @@
-# Maskenhund 🐶🎿
+# $SKI 🐶🎿
 
 Handy-App (installierbare Web-App / PWA) zum Bearbeiten von Fotos:
 Den Hundekopf mit Sturmhaube beliebig oft in eigene Bilder einfügen.
 
 ## Funktionen
 
-- **Foto wählen** – Bild aus der Galerie oder direkt mit der Kamera aufnehmen
+- **Sprachauswahl** beim ersten Öffnen – die 10 meistgesprochenen Sprachen der Welt
+  (Englisch, Chinesisch, Hindi, Spanisch, Französisch, Arabisch, Bengalisch, Portugiesisch,
+  Russisch, Urdu). Standard ist Englisch; über 🌐 jederzeit änderbar. Texte stehen in `i18n.js`.
+- **Choose photo** (Foto wählen) – Bild aus der Galerie oder direkt mit der Kamera aufnehmen
 - **+ Kopf** – Hundekopf einfügen (beliebig oft)
 - **Verschieben** – Kopf antippen und mit einem Finger ziehen
 - **Größe** – per Regler (5–200 %) oder mit zwei Fingern zoomen
@@ -37,6 +40,7 @@ Lokal testen: `python3 -m http.server 8000` im Projektordner und `http://localho
 | Datei | Inhalt |
 |---|---|
 | `index.html`, `style.css`, `app.js` | Die App |
+| `i18n.js` | Übersetzungen (10 Sprachen) |
 | `assets/head.png` | Freigestellter Hundekopf (transparenter Hintergrund) |
 | `manifest.webmanifest`, `sw.js`, `icons/` | Installation als App & Offline-Betrieb |
 

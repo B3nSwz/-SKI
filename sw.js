@@ -1,10 +1,11 @@
 // Service Worker: macht die App offline-fähig.
-const CACHE = 'maskenhund-v1';
+const CACHE = 'ski-v2';
 const FILES = [
   './',
   'index.html',
   'style.css',
   'app.js',
+  'i18n.js',
   'manifest.webmanifest',
   'assets/head.png',
   'icons/icon-192.png',
