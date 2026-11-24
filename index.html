@@ -21,6 +21,7 @@
     <input id="fileInput" type="file" accept="image/*" hidden>
     <h1>$SKI</h1>
     <button id="langBtn" class="btn icon" data-i18n-title="lang" title="Language" aria-label="Language">🌐</button>
+    <button id="shareBtn" class="btn icon hidden" disabled data-i18n-title="share" title="Share" aria-label="Share"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></button>
     <button id="saveBtn" class="btn primary" disabled>⬇︎ <span data-i18n="save">Save</span></button>
   </header>
 
@@ -53,6 +54,8 @@
     <p class="hint" data-i18n="hint">Tap a head to select · drag to move · use two fingers to zoom &amp; rotate</p>
     <button id="installBtn" class="btn install hidden">📲 <span data-i18n="install">Install app</span></button>
   </section>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <div id="installDialog" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="installTitle">
     <div class="sheet">

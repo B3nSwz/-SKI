@@ -1,5 +1,5 @@
 // Service Worker: macht die App offline-fähig.
-const CACHE = 'ski-v5';
+const CACHE = 'ski-v6';
 const FILES = [
   './',
   'index.html',

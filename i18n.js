@@ -232,3 +232,18 @@ const I18N_INSTALL = {
   },
 };
 Object.keys(I18N_INSTALL).forEach((k) => Object.assign(I18N[k], I18N_INSTALL[k]));
+
+// Teilen-Button und Hinweis nach dem Speichern
+const I18N_SAVE = {
+  en: { share: 'Share', savedDl: 'Saved to your Downloads folder' },
+  zh: { share: '分享', savedDl: '已保存到“下载”文件夹' },
+  hi: { share: 'शेयर करें', savedDl: 'डाउनलोड फ़ोल्डर में सेव किया गया' },
+  es: { share: 'Compartir', savedDl: 'Guardado en la carpeta Descargas' },
+  fr: { share: 'Partager', savedDl: 'Enregistré dans le dossier Téléchargements' },
+  ar: { share: 'مشاركة', savedDl: 'تم الحفظ في مجلد التنزيلات' },
+  bn: { share: 'শেয়ার করুন', savedDl: 'ডাউনলোড ফোল্ডারে সেভ হয়েছে' },
+  pt: { share: 'Compartilhar', savedDl: 'Salvo na pasta Downloads' },
+  ru: { share: 'Поделиться', savedDl: 'Сохранено в папку «Загрузки»' },
+  ur: { share: 'شیئر کریں', savedDl: 'ڈاؤن لوڈز فولڈر میں محفوظ ہو گیا' },
+};
+Object.keys(I18N_SAVE).forEach((k) => Object.assign(I18N[k], I18N_SAVE[k]));

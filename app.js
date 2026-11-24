@@ -164,6 +164,7 @@ function syncUI() {
   ui.empty.classList.toggle('hidden', hasBg);
   ui.add.disabled = !hasBg;
   ui.save.disabled = !hasBg;
+  shareBtn.disabled = !hasBg;
   [ui.flip, ui.dup, ui.front, ui.del, ui.size, ui.rot].forEach((el) => { el.disabled = !h; });
   if (h) {
     const pct = Math.round(h.size * 100);
@@ -385,8 +386,14 @@ window.addEventListener('keydown', (e) => {
 });
 
 // ---------- Speichern / Teilen -------------------------------------------------
-ui.save.addEventListener('click', async () => {
-  if (!state.bg) return;
+// Webseiten dürfen nicht direkt in die Galerie schreiben. Daher:
+//  - iPhone/iPad: Teilen-Menü – dort gibt es „Bild sichern“ (landet in Fotos).
+//  - Android & Desktop: direkter Download in den Ordner „Download“, den
+//    Galerie-Apps als Album anzeigen.
+//  - Eigener Teilen-Button für X, WhatsApp & Co.
+const shareBtn = $('shareBtn');
+
+async function renderImage() {
   const c = document.createElement('canvas');
   c.width = state.bg.width;
   c.height = state.bg.height;
@@ -395,16 +402,28 @@ ui.save.addEventListener('click', async () => {
   cx.drawImage(state.bg, 0, 0);
   state.heads.forEach((h) => drawHead(cx, h, c.width, c.height));
   const blob = await new Promise((r) => c.toBlob(r, 'image/jpeg', 0.92));
-  if (!blob) { alert(t('saveErr')); return; }
+  if (!blob) return null;
   const ts = new Date().toISOString().replace(/[-:]/g, '').replace('T', '-').slice(0, 15);
   const name = `SKI-${ts}.jpg`;
-  const file = new File([blob], name, { type: 'image/jpeg' });
+  return { blob, name, file: new File([blob], name, { type: 'image/jpeg' }) };
+}
 
-  // Auf dem Handy: Teilen-Menü (dort „Bild sichern“ / „In Galerie speichern“)
-  if (navigator.canShare && navigator.canShare({ files: [file] }) && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-    try { await navigator.share({ files: [file], title: '$SKI' }); return; }
-    catch (err) { if (err && err.name === 'AbortError') return; }
-  }
+const canShareFiles = () => {
+  try {
+    return !!(navigator.canShare && navigator.canShare({ files: [new File([''], 'x.jpg', { type: 'image/jpeg' })] }));
+  } catch { return false; }
+};
+
+let toastTimer = 0;
+function toast(msg) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+function download(blob, name) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -412,7 +431,32 @@ ui.save.addEventListener('click', async () => {
   document.body.appendChild(a);
   a.click();
   a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 4000);
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+async function shareImage(img) {
+  try {
+    await navigator.share({ files: [img.file], title: '$SKI' });
+    return true;
+  } catch (err) {
+    return !!(err && err.name === 'AbortError'); // abgebrochen = kein Fehler
+  }
+}
+
+ui.save.addEventListener('click', async () => {
+  if (!state.bg) return;
+  const img = await renderImage();
+  if (!img) { alert(t('saveErr')); return; }
+  if (isIOS() && canShareFiles() && (await shareImage(img))) return;
+  download(img.blob, img.name);
+  if (/Android/i.test(navigator.userAgent)) toast(t('savedDl'));
+});
+
+shareBtn.addEventListener('click', async () => {
+  if (!state.bg) return;
+  const img = await renderImage();
+  if (!img) { alert(t('saveErr')); return; }
+  if (!(await shareImage(img))) download(img.blob, img.name);
 });
 
 // ---------- Sprache -------------------------------------------------------------
@@ -540,6 +584,7 @@ window.matchMedia('(display-mode: standalone)').addEventListener?.('change', upd
 updateInstallButton();
 
 // ---------- Start --------------------------------------------------------------
+shareBtn.classList.toggle('hidden', !canShareFiles());
 new ResizeObserver(resize).observe(ui.stage);
 resize();
 syncUI();
